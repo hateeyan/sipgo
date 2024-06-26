@@ -94,6 +94,27 @@ func (s *DialogServer) ReadInvite(req *sip.Request, tx sip.ServerTransaction) (*
 	return dtx, nil
 }
 
+// ReadCancel should read from your OnCancel handler
+func (s *DialogServer) ReadCancel(req *sip.Request, tx sip.ServerTransaction) error {
+	dt, err := s.matchDialogRequest(req)
+	if err != nil {
+		return err
+	}
+
+	// cseq must match to our last dialog cseq
+	if req.CSeq().SeqNo != dt.lastCSeqNo {
+		return ErrDialogInvalidCseq
+	}
+
+	res := sip.NewResponseFromRequest(req, 200, "OK", nil)
+	if err := tx.Respond(res); err != nil {
+		return err
+	}
+
+	dt.setState(sip.DialogStateCancelled)
+	return nil
+}
+
 // ReadAck should read from your OnAck handler
 func (s *DialogServer) ReadAck(req *sip.Request, tx sip.ServerTransaction) error {
 	dt, err := s.matchDialogRequest(req)
@@ -104,6 +125,11 @@ func (s *DialogServer) ReadAck(req *sip.Request, tx sip.ServerTransaction) error
 	// cseq must match to our last dialog cseq
 	if req.CSeq().SeqNo != dt.lastCSeqNo {
 		return ErrDialogInvalidCseq
+	}
+
+	if sip.DialogState(dt.state.Load()) == sip.DialogStateCancelled {
+		_ = dt.Close()
+		dt.inviteTx.Terminate()
 	}
 	dt.setState(sip.DialogStateConfirmed)
 	// Acks are normally just absorbed, but in case of proxy

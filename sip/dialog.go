@@ -9,6 +9,8 @@ const (
 	DialogStateConfirmed DialogState = 2
 	// Dialog received BYE
 	DialogStateEnded DialogState = 3
+	// Dialog received CANCEL
+	DialogStateCancelled DialogState = 4
 )
 
 func (s DialogState) String() string {
