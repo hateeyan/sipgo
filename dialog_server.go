@@ -144,6 +144,22 @@ func (s *DialogServer) ReadBye(req *sip.Request, tx sip.ServerTransaction) error
 	return nil
 }
 
+// ReadRequest should read from your handler.
+func (s *DialogServer) ReadRequest(req *sip.Request, tx sip.ServerTransaction) (*DialogServerSession, error) {
+	dt, err := s.matchDialogRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := dt.validateRequest(req); err != nil {
+		return nil, err
+	}
+
+	dt.lastCSeqNo = req.CSeq().SeqNo
+
+	return dt, nil
+}
+
 type DialogServerSession struct {
 	Dialog
 	inviteTx sip.ServerTransaction
