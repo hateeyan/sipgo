@@ -183,7 +183,7 @@ func (t *transportTCP) parseStream(par *ParserStream, data []byte, src, laddr st
 	err := par.ParseSIPStreamEach(data, func(msg Message) {
 		msg.SetTransport(t.Network())
 		msg.SetSource(src)
-		msg.SetLocalAddress(laddr)
+		msg.SetLocalAddr(laddr)
 		handler(msg)
 	})
 

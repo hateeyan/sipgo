@@ -292,7 +292,7 @@ func (t *transportUDP) parseAndHandle(data []byte, src, laddr string, handler Me
 	// TODO should we avoid this and let source be inspected.
 	// Current transaction are taking connection but for UDP they can forward on different src address
 	msg.SetSource(src) // By default we expect our source is behind NAT. https://datatracker.ietf.org/doc/html/rfc3581#section-6
-	msg.SetLocalAddress(laddr)
+	msg.SetLocalAddr(laddr)
 	handler(msg)
 }
 

@@ -120,8 +120,8 @@ type Message interface {
 	SetSource(src string)
 	Destination() string
 	SetDestination(dest string)
-	LocalAddress() string
-	SetLocalAddress(laddr string)
+	LocalAddr() string
+	SetLocalAddr(laddr string)
 }
 
 type MessageData struct {
@@ -195,8 +195,8 @@ func (msg *MessageData) SetDestination(dest string) {
 	msg.dest = dest
 }
 
-func (msg *MessageData) LocalAddress() string { return msg.laddr }
+func (msg *MessageData) LocalAddr() string { return msg.laddr }
 
-func (msg *MessageData) SetLocalAddress(laddr string) {
+func (msg *MessageData) SetLocalAddr(laddr string) {
 	msg.laddr = laddr
 }

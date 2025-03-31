@@ -201,7 +201,7 @@ func (t *transportWS) parseStream(par *ParserStream, data []byte, src, laddr str
 
 	msg.SetTransport(t.transport)
 	msg.SetSource(src)
-	msg.SetLocalAddress(laddr)
+	msg.SetLocalAddr(laddr)
 	handler(msg)
 }
 
