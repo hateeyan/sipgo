@@ -213,7 +213,7 @@ func (t *transportUDP) readListenerConnection(conn *UDPConnection, laddr string,
 			acceptedAddr = append(acceptedAddr, rastr)
 		}
 
-		t.parseAndHandle(data, rastr, handler)
+		t.parseAndHandle(data, rastr, laddr, handler)
 		lastRaddr = rastr
 	}
 }
@@ -272,7 +272,7 @@ func (t *transportUDP) readListenerConnection(conn *UDPConnection, laddr string,
 	}
 } */
 
-func (t *transportUDP) parseAndHandle(data []byte, src string, handler MessageHandler) {
+func (t *transportUDP) parseAndHandle(data []byte, src, laddr string, handler MessageHandler) {
 	// Check is keep alive
 	if len(data) <= 4 {
 		//One or 2 CRLF
@@ -292,6 +292,7 @@ func (t *transportUDP) parseAndHandle(data []byte, src string, handler MessageHa
 	// TODO should we avoid this and let source be inspected.
 	// Current transaction are taking connection but for UDP they can forward on different src address
 	msg.SetSource(src) // By default we expect our source is behind NAT. https://datatracker.ietf.org/doc/html/rfc3581#section-6
+	msg.SetLocalAddress(laddr)
 	handler(msg)
 }
 

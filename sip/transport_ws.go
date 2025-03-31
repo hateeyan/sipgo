@@ -186,13 +186,13 @@ func (t *transportWS) readConnection(conn *WSConnection, laddr string, raddr str
 			}
 		}
 
-		t.parseStream(par, data, raddr, handler)
+		t.parseStream(par, data, raddr, laddr, handler)
 	}
 
 }
 
 // TODO: Try to reuse this from TCP transport as func are same
-func (t *transportWS) parseStream(par *ParserStream, data []byte, src string, handler MessageHandler) {
+func (t *transportWS) parseStream(par *ParserStream, data []byte, src, laddr string, handler MessageHandler) {
 	msg, err := t.parser.ParseSIP(data) //Very expensive operation
 	if err != nil {
 		t.log.Error("failed to parse", "error", err, "data", string(data))
@@ -201,6 +201,7 @@ func (t *transportWS) parseStream(par *ParserStream, data []byte, src string, ha
 
 	msg.SetTransport(t.transport)
 	msg.SetSource(src)
+	msg.SetLocalAddress(laddr)
 	handler(msg)
 }
 

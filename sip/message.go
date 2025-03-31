@@ -120,6 +120,8 @@ type Message interface {
 	SetSource(src string)
 	Destination() string
 	SetDestination(dest string)
+	LocalAddress() string
+	SetLocalAddress(laddr string)
 }
 
 type MessageData struct {
@@ -133,6 +135,7 @@ type MessageData struct {
 	// This is for internal routing
 	src    string
 	dest   string
+	laddr  string
 	ViaNAT bool
 }
 
@@ -190,4 +193,10 @@ func (msg *MessageData) Destination() string {
 
 func (msg *MessageData) SetDestination(dest string) {
 	msg.dest = dest
+}
+
+func (msg *MessageData) LocalAddress() string { return msg.laddr }
+
+func (msg *MessageData) SetLocalAddress(laddr string) {
+	msg.laddr = laddr
 }

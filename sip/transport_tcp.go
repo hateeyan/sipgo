@@ -175,14 +175,15 @@ func (t *transportTCP) readConnection(conn *TCPConnection, laddr string, raddr s
 		// TODO fallback to parseFull if message size limit is set
 
 		// t.log.Debug().Str("raddr", raddr).Str("data", string(data)).Msg("new message")
-		t.parseStream(par, data, raddr, handler)
+		t.parseStream(par, data, raddr, laddr, handler)
 	}
 }
 
-func (t *transportTCP) parseStream(par *ParserStream, data []byte, src string, handler MessageHandler) {
+func (t *transportTCP) parseStream(par *ParserStream, data []byte, src, laddr string, handler MessageHandler) {
 	err := par.ParseSIPStreamEach(data, func(msg Message) {
 		msg.SetTransport(t.Network())
 		msg.SetSource(src)
+		msg.SetLocalAddress(laddr)
 		handler(msg)
 	})
 
